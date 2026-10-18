@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nomad 6S</title>
+<meta name="description" content="Just after takeoff — watch this flight grow. Games and web projects made by 6S.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Nomad 6S">
+<meta property="og:description" content="Just after takeoff — watch this flight grow. Games and web projects made by 6S.">
+<meta property="og:url" content="https://nomadst6r.com">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#24497a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ede2; --card:#fbf8f2; --ink:#1d1b18; --muted:#6f685e;
+    --line:#d9d0c1; --accent:#e4572e; --accent-2:#2a6f97; --ok:#2f8f5b;
+    --board:#151515; --board-ink:#f5c542;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#141310; --card:#1d1b17; --ink:#efe9de; --muted:#a39b8e;
+      --line:#34302a; --accent:#ff7a50; --accent-2:#6fb3d9; --ok:#5cc489;
+      --board:#0b0b0b; --board-ink:#f5c542;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#141310; --card:#1d1b17; --ink:#efe9de; --muted:#a39b8e;
+    --line:#34302a; --accent:#ff7a50; --accent-2:#6fb3d9; --ok:#5cc489;
+    --board:#0b0b0b; --board-ink:#f5c542;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Space Grotesk","Noto Sans KR",system-ui,sans-serif;
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  html[lang="ko"] body{font-family:"Noto Sans KR","Space Grotesk",system-ui,sans-serif}
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+  a{color:inherit}
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+
+  /* top bar */
+  .top{display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:18px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .handle{font-weight:600;letter-spacing:.02em}
+  .handle b{color:var(--accent)}
+  .top-r{display:flex;gap:10px;align-items:center;color:var(--muted)}
+  .btn-sm{border:1px solid var(--line);background:var(--card);color:var(--ink);
+    padding:6px 10px;border-radius:999px;cursor:pointer;font:inherit;font-size:12px}
+  .btn-sm:hover{border-color:var(--ink)}
+  .clock{display:none}
+  @media(min-width:640px){.clock{display:inline}}
+
+  /* hero: airplane window */
+  :root{
+    --frame:#e6e0d4; --frame-in:#d3cbbc;
+    --sky:linear-gradient(180deg,#24497a 0%,#4f84bd 38%,#9cc1df 62%,#f3b98f 86%,#f7d9ae 100%);
+    --wing:#3a3f4a; --stars:0;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --frame:#2b2925; --frame-in:#3a3731;
+      --sky:linear-gradient(180deg,#050a1c 0%,#0f2147 45%,#2c2a5c 78%,#5a3a6b 100%);
+      --wing:#0d0f14; --stars:1;
+    }
+  }
+  :root[data-theme="dark"]{
+    --frame:#2b2925; --frame-in:#3a3731;
+    --sky:linear-gradient(180deg,#050a1c 0%,#0f2147 45%,#2c2a5c 78%,#5a3a6b 100%);
+    --wing:#0d0f14; --stars:1;
+  }
+  .hero{padding:36px 0 40px}
+  .fuselage{background:var(--frame);border-radius:56px;padding:clamp(12px,3vw,26px);
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.35), inset 0 -6px 18px rgba(0,0,0,.12), 0 18px 40px -24px rgba(0,0,0,.45)}
+  .pane{position:relative;overflow:hidden;isolation:isolate;
+    border-radius:clamp(60px,14vw,150px) / clamp(70px,16vw,170px);
+    background:var(--sky);
+    box-shadow:0 0 0 clamp(6px,1.4vw,12px) var(--frame-in), inset 0 0 50px rgba(0,0,0,.35)}
+  .pane::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;border-radius:inherit;
+    background:linear-gradient(120deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,0) 28%,rgba(255,255,255,0) 62%,rgba(255,255,255,.10) 75%,rgba(255,255,255,0) 82%)}
+  .sky{position:absolute;inset:0;z-index:0}
+  .stars{position:absolute;inset:0;opacity:var(--stars);
+    background-image:radial-gradient(1.5px 1.5px at 12% 22%,#fff,transparent),radial-gradient(1px 1px at 32% 12%,#fff,transparent),
+      radial-gradient(1.5px 1.5px at 58% 28%,#fff,transparent),radial-gradient(1px 1px at 72% 16%,#fff,transparent),
+      radial-gradient(1px 1px at 86% 34%,#fff,transparent),radial-gradient(1.5px 1.5px at 22% 44%,#fff,transparent),
+      radial-gradient(1px 1px at 46% 8%,#fff,transparent),radial-gradient(1px 1px at 92% 10%,#fff,transparent)}
+  .cloud{position:absolute;height:38px;width:160px;border-radius:999px;background:rgba(255,255,255,.85);
+    filter:blur(6px);opacity:.75;animation:drift linear infinite}
+  .cloud::before,.cloud::after{content:"";position:absolute;background:inherit;border-radius:50%}
+  .cloud::before{width:70px;height:60px;left:28px;top:-26px}
+  .cloud::after{width:56px;height:48px;left:80px;top:-18px}
+  .c1{top:62%;animation-duration:38s;animation-delay:-6s}
+  .c2{top:74%;width:220px;animation-duration:52s;animation-delay:-30s;opacity:.6}
+  .c3{top:30%;width:110px;animation-duration:64s;animation-delay:-12s;opacity:.45}
+  .c4{top:84%;width:260px;animation-duration:44s;animation-delay:-20s;opacity:.7}
+  :root[data-theme="dark"] .cloud{background:rgba(160,170,210,.35)}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cloud{background:rgba(160,170,210,.35)}}
+  @keyframes drift{from{transform:translateX(110vw)}to{transform:translateX(-320px)}}
+  .wing{position:absolute;right:0;bottom:0;width:70%;height:38%;fill:var(--wing);opacity:.92}
+  .shade{position:absolute;top:0;left:0;right:0;height:clamp(28px,6vw,46px);z-index:2;
+    background:linear-gradient(180deg,#f3efe8,#d9d2c5);border-bottom:3px solid #c4baa8;
+    box-shadow:0 6px 14px -6px rgba(0,0,0,.4)}
+  .shade span{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:44px;height:6px;border-radius:4px;background:#b3a893}
+  .pane-content{position:relative;z-index:4;color:#fff;
+    padding:clamp(60px,12vw,110px) clamp(26px,7vw,80px) clamp(70px,12vw,110px)}
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+  h1{font-size:clamp(44px,9vw,96px);line-height:.95;letter-spacing:-.03em;margin:14px 0 22px;
+    text-shadow:0 2px 20px rgba(0,0,0,.25)}
+  h1 em{font-style:normal;color:#ffd29a}
+  .lead{font-size:clamp(16px,2.2vw,20px);max-width:600px;color:rgba(255,255,255,.88);text-shadow:0 1px 10px rgba(0,0,0,.25)}
+  .lead strong{color:#fff;font-weight:700}
+  .coords{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-size:12px;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:6px 12px;
+    background:rgba(255,255,255,.14);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff}
+  .chip i{font-style:normal;color:#ffd29a}
+
+  section{padding:40px 0}
+  .sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:24px}
+  .sec-h h2{font-size:28px;letter-spacing:-.01em}
+  .sec-h span{font-size:12px;color:var(--muted)}
+
+  /* boarding passes */
+  .passes{display:grid;gap:18px}
+  .pass{display:grid;grid-template-columns:1fr;background:var(--card);
+    border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;
+    transition:transform .18s ease, box-shadow .18s ease}
+  a.pass:hover{transform:translateY(-3px);box-shadow:0 10px 30px -14px rgba(0,0,0,.35)}
+  .pass-main{padding:20px 22px}
+  .pass-top{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);letter-spacing:.12em}
+  .route{display:flex;align-items:center;gap:14px;margin:14px 0 8px}
+  .route .code{font-size:30px;font-weight:700;letter-spacing:.02em}
+  .route .plane{flex:1;height:1px;border-top:2px dashed var(--line);position:relative}
+  .route .plane::after{content:"✈";position:absolute;left:50%;top:-14px;transform:translateX(-50%);
+    color:var(--accent);font-size:18px;background:var(--card);padding:0 6px}
+  .pass h3{font-size:22px;margin-top:6px}
+  .pass p{color:var(--muted);font-size:15px;margin-top:4px}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .tag{font-size:11px;padding:3px 8px;border-radius:6px;background:var(--paper);border:1px solid var(--line)}
+  .stub{border-top:2px dashed var(--line);padding:16px 22px;display:flex;
+    justify-content:space-between;align-items:center;gap:12px;position:relative}
+  .stub .lbl{font-size:10px;letter-spacing:.14em;color:var(--muted)}
+  .stub .val{font-size:14px;font-weight:600}
+  .status{font-size:11px;font-weight:600;letter-spacing:.1em;padding:5px 10px;border-radius:999px;white-space:nowrap}
+  .s-live{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+  .s-itch{background:color-mix(in srgb,var(--accent-2) 15%,transparent);color:var(--accent-2)}
+  .s-build{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+  .go{font-size:13px;font-weight:600;color:var(--accent)}
+  @media(min-width:720px){
+    .pass{grid-template-columns:1fr 210px}
+    .stub{border-top:none;border-left:2px dashed var(--line);flex-direction:column;align-items:flex-start;justify-content:center}
+  }
+
+  /* departure board */
+  .board{background:var(--board);border-radius:14px;padding:18px;color:var(--board-ink);overflow:hidden}
+  .board-head,.row{display:grid;grid-template-columns:72px 1fr 110px;gap:10px;align-items:center}
+  .board-head{font-size:10px;letter-spacing:.16em;color:#8a8a8a;padding:0 4px 10px;border-bottom:1px solid #2a2a2a}
+  .row{padding:12px 4px;border-bottom:1px solid #222;font-size:14px}
+  .row:last-child{border-bottom:none}
+  .row .t{color:#9a9a9a;font-size:12px}
+  .flap{display:inline-block;background:#222;padding:2px 6px;border-radius:3px;letter-spacing:.06em}
+  .row .st{font-size:11px;letter-spacing:.1em;text-align:right}
+  .st.on{color:#5cc489}
+  .st.sched{color:#f5c542}
+  .blink{animation:blink 1.4s steps(2,start) infinite}
+  @keyframes blink{to{visibility:hidden}}
+  @media(max-width:480px){.board-head,.row{grid-template-columns:56px 1fr 84px}}
+
+  /* manifesto */
+  .manifesto{display:grid;gap:14px}
+  @media(min-width:720px){.manifesto{grid-template-columns:repeat(3,1fr)}}
+  .m{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .m .n{font-size:12px;color:var(--accent)}
+  .m h4{font-size:18px;margin:6px 0}
+  .m p{font-size:14px;color:var(--muted)}
+
+  footer{padding:48px 0 64px;border-top:1px dashed var(--line);margin-top:24px}
+  .foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:center}
+  .ig{display:inline-flex;gap:8px;align-items:center;text-decoration:none;font-weight:700;
+    border:2px solid var(--ink);padding:10px 16px;border-radius:999px}
+  .ig:hover{background:var(--ink);color:var(--paper)}
+  .small{font-size:12px;color:var(--muted)}
+
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top mono">
+    <div class="handle">nomad<b>_</b>6s</div>
+    <div class="top-r">
+      <span class="clock" id="clock">SEL --:--</span>
+      <button class="btn-sm mono" id="langBtn" aria-label="Switch language">한국어</button>
+      <button class="btn-sm mono" id="themeBtn" aria-label="Toggle theme">◐</button>
+    </div>
+  </header>
+
+  <section class="hero">
+   <div class="fuselage">
+    <div class="pane">
+     <div class="sky" aria-hidden="true">
+       <span class="stars"></span>
+       <span class="cloud c1"></span><span class="cloud c2"></span><span class="cloud c3"></span><span class="cloud c4"></span>
+       <svg class="wing" viewBox="0 0 400 160" preserveAspectRatio="none"><path d="M0 160 L400 60 L400 78 L60 160 Z"/><path d="M330 72 L352 30 L364 32 L350 76 Z"/></svg>
+     </div>
+     <div class="shade" aria-hidden="true"><span></span></div>
+     <div class="pane-content">
+    <div class="eyebrow mono" data-en="Seat 6A · window · est. 2026" data-ko="좌석 6A · 창가석 · since 2026">Seat 6A · window · est. 2026</div>
+    <h1 data-en="Nomad <em>6S</em>" data-ko="Nomad <em>6S</em>">Nomad <em>6S</em></h1>
+    <p class="lead"
+       data-en="Just after takeoff. I'm climbing toward <strong>freedom of time and place</strong>, one small project at a time. Every launch here is a record of how far I've come — <strong>stay on board and watch this flight grow</strong>."
+       data-ko="이제 막 이륙했어요. <strong>시간과 공간의 자유</strong>를 향해, 작은 프로젝트 하나씩 고도를 올리는 중입니다. 여기 쌓이는 것들은 모두 제 성장 기록이에요. <strong>이 비행이 어디까지 오르는지 지켜봐 주세요.</strong>">
+      Just after takeoff. I'm climbing toward <strong>freedom of time and place</strong>, one small project at a time. Every launch here is a record of how far I've come — <strong>stay on board and watch this flight grow</strong>.
+    </p>
+    <div class="coords mono">
+      <span class="chip"><i>●</i> <span data-en="Based in Korea" data-ko="한국에서">Based in Korea</span></span>
+      <span class="chip"><i>→</i> <span data-en="Heading: anywhere" data-ko="목적지: 어디든">Heading: anywhere</span></span>
+      <span class="chip"><i>⌘</i> <span data-en="Games · Web · Data" data-ko="게임 · 웹 · 데이터">Games · Web · Data</span></span>
+    </div>
+     </div>
+    </div>
+   </div>
+  </section>
+
+  <section id="projects">
+    <div class="sec-h">
+      <h2 data-en="Boarding passes" data-ko="탑승권">Boarding passes</h2>
+      <span class="mono" data-en="Made By 6S" data-ko="Made By 6S">Made By 6S</span>
+    </div>
+    <div class="passes" id="passes"></div>
+  </section>
+
+  <section id="destinations">
+    <div class="sec-h">
+      <h2 data-en="Departures" data-ko="출발 예정">Departures</h2>
+      <span class="mono" data-en="bucket list" data-ko="버킷리스트">bucket list</span>
+    </div>
+    <div class="board mono">
+      <div class="board-head"><span>GATE</span><span>DESTINATION</span><span style="text-align:right">STATUS</span></div>
+      <div id="board"></div>
+    </div>
+  </section>
+
+  <section id="rules">
+    <div class="sec-h">
+      <h2 data-en="Travel rules" data-ko="여행 규칙">Travel rules</h2>
+      <span class="mono" data-en="how I work" data-ko="일하는 방식">how I work</span>
+    </div>
+    <div class="manifesto">
+      <div class="m"><div class="n mono">01</div>
+        <h4 data-en="Ship small, ship often" data-ko="작게, 자주 내보내기">Ship small, ship often</h4>
+        <p data-en="A finished tiny game beats a perfect idea in a notebook." data-ko="노트 속 완벽한 아이디어보다 완성된 작은 게임 하나.">A finished tiny game beats a perfect idea in a notebook.</p></div>
+      <div class="m"><div class="n mono">02</div>
+        <h4 data-en="AI is the co-pilot" data-ko="AI는 부기장">AI is the co-pilot</h4>
+        <p data-en="I plan and design; AI helps me build. I still check every bolt." data-ko="기획과 설계는 내가, 구현은 AI와 함께. 마지막 점검은 직접.">I plan and design; AI helps me build. I still check every bolt.</p></div>
+      <div class="m"><div class="n mono">03</div>
+        <h4 data-en="Only a laptop required" data-ko="노트북 하나면 충분">Only a laptop required</h4>
+        <p data-en="If it can't be done from a café abroad, I redesign it until it can." data-ko="해외 카페에서 못 하는 일이라면, 할 수 있을 때까지 다시 설계한다.">If it can't be done from a café abroad, I redesign it until it can.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot">
+      <a class="ig" href="https://instagram.com/nomad_6js" target="_blank" rel="noopener">
+        <span>◎</span> @nomad_6js
+      </a>
+      <span class="small mono">nomadst6r.com · <span data-en="made with a laptop" data-ko="노트북으로 만듦">made with a laptop</span></span>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ===== 여기만 고치면 프로젝트가 추가돼요 =====
+   status: "live" | "itch" | "build"
+   url: 비워두면 클릭 안 되는 카드가 됨 */
+const PROJECTS = [
+  {
+    code: "WTL", no: "NMD-001",
+    name: { en: "World Tap League", ko: "월드 탭 리그" },
+    desc: { en: "Get matched with a stranger, win a random mini-game, earn a point for your country.",
+            ko: "전 세계 누군가와 매칭돼 랜덤 미니게임으로 대결하고, 이기면 내 나라에 +1점." },
+    tags: ["Web game", "Multiplayer", "Firebase"],
+    status: "live", url: "https://worldtap.nomadst6r.com"
+  },
+  {
+    code: "???", no: "NMD-002",
+    name: { en: "Next flight", ko: "다음 비행" },
+    desc: { en: "Something new is being built. Follow along on Instagram.",
+            ko: "새로운 걸 만드는 중. 인스타그램에서 과정을 공개해요." },
+    tags: ["Coming soon"],
+    status: "build", url: "https://instagram.com/nomad_6js"
+  }
+];
+
+const DESTINATIONS = [
+  { gate: "A1", en: "Digital nomad life abroad", ko: "해외 노마드 생활", on: true },
+  { gate: "B2", en: "Scuba diving license",     ko: "스쿠버다이빙 자격증" },
+  { gate: "B3", en: "Tottenham match, live",     ko: "토트넘 경기 직관" },
+  { gate: "C4", en: "Switzerland",               ko: "스위스 여행" },
+  { gate: "C5", en: "See the aurora",            ko: "오로라 보기" },
+  { gate: "D6", en: "Paragliding",               ko: "패러글라이딩" },
+  { gate: "D7", en: "Bungee jump",               ko: "번지점프" }
+];
+
+const STATUS = {
+  live:  { cls:"s-live",  en:"LIVE",       ko:"운영 중" },
+  itch:  { cls:"s-itch",  en:"ON ITCH.IO", ko:"itch.io" },
+  build: { cls:"s-build", en:"BUILDING",   ko:"제작 중" }
+};
+
+let lang = "en";
+try { lang = localStorage.getItem("n6-lang") || (navigator.language.startsWith("ko") ? "ko" : "en"); } catch(e){}
+
+function render(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-en]").forEach(el => { el.innerHTML = el.dataset[lang]; });
+  document.getElementById("langBtn").textContent = lang === "en" ? "한국어" : "EN";
+
+  document.getElementById("passes").innerHTML = PROJECTS.map(p => {
+    const s = STATUS[p.status];
+    const tag = p.url ? "a" : "div";
+    const href = p.url ? ` href="${p.url}" target="_blank" rel="noopener"` : "";
+    return `<${tag} class="pass"${href}>
+      <div class="pass-main">
+        <div class="pass-top mono"><span>${p.no}</span><span>NOMAD AIR</span></div>
+        <div class="route mono"><span class="code">IDEA</span><span class="plane"></span><span class="code">${p.code}</span></div>
+        <h3>${p.name[lang]}</h3>
+        <p>${p.desc[lang]}</p>
+        <div class="tags mono">${p.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+      </div>
+      <div class="stub mono">
+        <div><div class="lbl">STATUS</div><span class="status ${s.cls}">${s[lang]}</span></div>
+        ${p.url ? `<span class="go">${lang==="en" ? "Board now →" : "탑승하기 →"}</span>` : ""}
+      </div>
+    </${tag}>`;
+  }).join("");
+
+  document.getElementById("board").innerHTML = DESTINATIONS.map(d => `
+    <div class="row">
+      <span class="t">${d.gate}</span>
+      <span><span class="flap">${d[lang].toUpperCase()}</span></span>
+      <span class="st ${d.on ? "on" : "sched"}">${d.on
+        ? `<span class="blink">●</span> ${lang==="en" ? "BOARDING" : "탑승 중"}`
+        : (lang==="en" ? "SCHEDULED" : "예정")}</span>
+    </div>`).join("");
+}
+
+document.getElementById("langBtn").onclick = () => {
+  lang = lang === "en" ? "ko" : "en";
+  try { localStorage.setItem("n6-lang", lang); } catch(e){}
+  render();
+};
+
+document.getElementById("themeBtn").onclick = () => {
+  const root = document.documentElement;
+  const isDark = root.dataset.theme
+    ? root.dataset.theme === "dark"
+    : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = isDark ? "light" : "dark";
+  try { localStorage.setItem("n6-theme", root.dataset.theme); } catch(e){}
+};
+try { const t = localStorage.getItem("n6-theme"); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+
+function tick(){
+  const t = new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Seoul",hour:"2-digit",minute:"2-digit"});
+  document.getElementById("clock").textContent = "SEL " + t;
+}
+tick(); setInterval(tick, 30000);
+
+render();
+</script>
+</body>
+</html>
